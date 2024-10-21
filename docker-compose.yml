@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  flask-app:
+    build: .
+    image: my-flask-app
+    ports:
+      - "5005:5005"
+    restart: no
+    devices:
+      - /dev/mem:/dev/mem
+      - /dev/gpiomem:/dev/gpiomem
+    privileged: true
+
