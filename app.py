@@ -1,5 +1,6 @@
 import os
 import time
+import random
 from flask import Flask, request
 from PIL import Image
 import subprocess
@@ -20,24 +21,24 @@ def last():
 
 
 @app.route('/random', methods=['GET'])
-def random():
-    # here i want ot display a random image saved in the images/saved folder
-    # get a list of all the files in the images/saved folder
-    files = []
-    for filename in os.listdir('images/saved'):
-        if filename.endswith('.png'):
-            files.append(filename)
+def random_image():
+    # Get a list of all the .png files in the images/saved folder
+    files = [filename for filename in os.listdir('images/saved') if filename.endswith('.png')]
 
-    # get a random file from the list
+    if not files:
+        return 'No images found in the folder', 404
+
+    # Get a random file from the list
     random_file = random.choice(files)
-    filepath = 'images/saved/' + random_file
+    filepath = os.path.join('images/saved', random_file)
+
     try:
         # Using subprocess to call the external Python script
         subprocess.run(['python3', 'display.py', filepath], check=True)
     except subprocess.CalledProcessError as e:
         return f'Error displaying image: {e}', 500
 
-    return 'Image saved and displayed successfully'
+    return 'Image displayed successfully', 200
 
 
 
