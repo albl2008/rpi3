@@ -1,9 +1,45 @@
+import os
 import time
 from flask import Flask, request
 from PIL import Image
 import subprocess
 
 app = Flask(__name__)
+
+
+@app.route('/last', methods=['GET'])
+def last():
+    filepath = 'images/image.png'
+    try:
+        # Using subprocess to call the external Python script
+        subprocess.run(['python3', 'display.py', filepath], check=True)
+    except subprocess.CalledProcessError as e:
+        return f'Error displaying image: {e}', 500
+
+    return 'Image saved and displayed successfully'
+
+
+@app.route('/random', methods=['GET'])
+def random():
+    # here i want ot display a random image saved in the images/saved folder
+    # get a list of all the files in the images/saved folder
+    files = []
+    for filename in os.listdir('images/saved'):
+        if filename.endswith('.png'):
+            files.append(filename)
+
+    # get a random file from the list
+    random_file = random.choice(files)
+    filepath = 'images/saved/' + random_file
+    try:
+        # Using subprocess to call the external Python script
+        subprocess.run(['python3', 'display.py', filepath], check=True)
+    except subprocess.CalledProcessError as e:
+        return f'Error displaying image: {e}', 500
+
+    return 'Image saved and displayed successfully'
+
+
 
 @app.route('/image', methods=['POST'])
 def upload_image():
@@ -18,6 +54,11 @@ def upload_image():
     # Save the uploaded image to a file
     filepath = 'images/image.png'
     image_file.save(filepath)
+
+    randomNum = int(time.time() * 1000)
+    randomFilePath = 'images/saved/' + str(randomNum) + '.png'
+    image_file.save(randomFilePath)
+
 
     # Call the display.py script with the path to the uploaded image
     try:
