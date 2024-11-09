@@ -23,14 +23,16 @@ def last():
 @app.route('/random', methods=['GET'])
 def random_image():
     # Get a list of all the .png files in the images/saved folder
-    files = [filename for filename in os.listdir('images/saved') if filename.endswith('.png')]
+    files = [filename for filename in os.listdir('images') if filename.endswith('.png')]
 
     if not files:
         return 'No images found in the folder', 404
 
     # Get a random file from the list
     random_file = random.choice(files)
-    filepath = os.path.join('images/saved', random_file)
+    while random_file == 'weather.png' or random_file == 'image.png':
+        random_file = random.choice(files)
+    filepath = os.path.join('images/', random_file)
 
     try:
         # Using subprocess to call the external Python script
@@ -57,7 +59,7 @@ def upload_image():
     image_file.save(filepath)
 
     randomNum = int(time.time() * 1000)
-    randomFilePath = 'images/saved/' + 'img_' + str(randomNum) + '.png'
+    randomFilePath = 'images/' + 'img_' + str(randomNum) + '.png'
     image_file.save(randomFilePath)
 
 
