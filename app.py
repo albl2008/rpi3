@@ -57,7 +57,7 @@ def upload_image():
     image_file.save(filepath)
 
     randomNum = int(time.time() * 1000)
-    randomFilePath = 'images/saved/' + str(randomNum) + '.png'
+    randomFilePath = 'images/saved/' + 'img_' + str(randomNum) + '.png'
     image_file.save(randomFilePath)
 
 
