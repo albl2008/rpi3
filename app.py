@@ -36,9 +36,9 @@ def upload_image():
     if image_file.filename == '':
         return 'No image file selected', 400
 
-    # Save with standard filename and then with a unique timestamped filename
+    
     filepath = save_image(image_file, 'image.png')
-    timestamped_filepath = save_image(image_file, f'img_{int(time.time() * 1000)}.png')
+    
 
     # Call display with the standard filepath
     try:
@@ -47,6 +47,24 @@ def upload_image():
         return f'Error displaying image: {e}', 500
 
     return 'Image saved and displayed successfully'
+
+@app.route('/save', methods=['POST'])
+def upload_image():
+    if 'image' not in request.files:
+        return 'No image part in the request', 400
+
+    image_file = request.files['image']
+
+    if image_file.filename == '':
+        return 'No image file selected', 400
+
+    timestamped_filepath = save_image(image_file, f'img_{int(time.time() * 1000)}.png')
+
+    
+    
+
+    return 'Image saved and displayed successfully ' + timestamped_filepath
+
 
 
 @app.route('/random', methods=['GET'])
