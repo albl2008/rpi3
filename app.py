@@ -49,7 +49,7 @@ def upload_image():
     return 'Image saved and displayed successfully'
 
 @app.route('/save', methods=['POST'])
-def upload_image():
+def save_image():
     if 'image' not in request.files:
         return 'No image part in the request', 400
 
