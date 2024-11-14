@@ -49,7 +49,7 @@ def upload_image():
     return 'Image saved and displayed successfully'
 
 @app.route('/save', methods=['POST'])
-def save_image():
+def save():
     if 'image' not in request.files:
         return 'No image part in the request', 400
 
@@ -80,6 +80,18 @@ def upload_weather():
     image_file.save(filepath)
 
     # Call the display.py script with the path to the uploaded weather image
+    try:
+        subprocess.run(['python3', 'display.py', filepath], check=True)
+    except subprocess.CalledProcessError as e:
+        return f'Error displaying weather image: {e}', 500
+
+    return 'Weather image saved and displayed successfully'
+
+@app.route('/last', methods=['POST'])
+def last():
+    
+    filepath = 'images/image.png'
+
     try:
         subprocess.run(['python3', 'display.py', filepath], check=True)
     except subprocess.CalledProcessError as e:
