@@ -87,7 +87,7 @@ def upload_weather():
 
     return 'Weather image saved and displayed successfully'
 
-@app.route('/last', methods=['POST'])
+@app.route('/last', methods=['GET'])
 def last():
     
     filepath = 'images/image.png'
