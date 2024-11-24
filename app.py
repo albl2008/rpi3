@@ -91,11 +91,29 @@ def upload_weather():
 
 IMAGES_DIR = 'images'
 
+@app.route('/view/<filename>', methods=['GET'])
+def view(filename):
+    filepath = os.path.join(IMAGES_DIR, filename)
+
+    # Check if file exists
+    if not os.path.exists(filepath):
+        return jsonify({'error': 'File not found'}), 404
+
+    try:
+        # Call the display.py script with the specified file
+        subprocess.run(['python3', 'display.py', filepath], check=True)
+    except subprocess.CalledProcessError as e:
+        return jsonify({'error': f'Error displaying image: {e}'}), 500
+
+    return jsonify({'message': f'Image {filename} displayed successfully'}), 200
+
+
+
 @app.route('/images', methods=['GET'])
 def get_images():
     try:
         # List all image files in the directory
-        images = [f"http://192.168.100.179:5005/image/{img}" for img in os.listdir(IMAGES_DIR) if img.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+        images = [f"http://192.168.100.179:5005/get-image/{img}" for img in os.listdir(IMAGES_DIR) if img.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
         return jsonify(images)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
