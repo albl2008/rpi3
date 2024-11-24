@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 import time
-from flask import Flask, request
+from flask import Flask, request, jsonify, send_file
 from threading import Lock
 import random
 import subprocess
@@ -86,6 +86,32 @@ def upload_weather():
         return f'Error displaying weather image: {e}', 500
 
     return 'Weather image saved and displayed successfully'
+
+
+
+IMAGES_DIR = 'images'
+
+@app.route('/images', methods=['GET'])
+def get_images():
+    try:
+        # List all image files in the directory
+        images = [f"http://192.168.100.179:5005/image/{img}" for img in os.listdir(IMAGES_DIR) if img.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+        return jsonify(images)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/get-image/<filename>', methods=['GET'])
+def get_image(filename):
+    try:
+        filepath = os.path.join(IMAGES_DIR, filename)
+        if os.path.exists(filepath):
+            return send_file(filepath, mimetype='image/png')
+        else:
+            return jsonify({'error': 'File not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 
 @app.route('/last', methods=['GET'])
 def last():
