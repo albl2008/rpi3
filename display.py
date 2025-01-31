@@ -17,6 +17,7 @@ def show(image_path: str):
             time.sleep(2)
 
             image = Image.open(image_path)
+            image = image.rotate(180, expand=True)  # Rotate all images by 180°
             image = image.resize((epd_instance.width, epd_instance.height))
             buf = epd_instance.getbuffer(image)
 

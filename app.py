@@ -25,6 +25,27 @@ def save_image(image_file, base_filename):
         os.remove(temp_filepath)  # Clean up temporary file
         return final_filepath
 
+IMAGES_DIR = "/server/3b+/images"  # The absolute path to your images directory
+
+print(IMAGES_DIR)
+
+@app.route("/delete/<filename>", methods=["DELETE"]) # Expecting DELETE requests
+def delete_image(filename):
+    try:
+        image_path = os.path.join(IMAGES_DIR, filename)
+        print(f"Deleting image at: {image_path}")
+        os.remove(image_path)
+        return jsonify({"message": "Image deleted successfully"}), 200
+    except FileNotFoundError:
+        return jsonify({"error": "Image not found"}), 404
+    except OSError as e:  # Handle potential OS errors (permissions, etc.)
+        print(f"OS Error: {e}")
+        return jsonify({"error": f"Error deleting image: {e}"}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
+
+
 
 @app.route('/image', methods=['POST'])
 def upload_image():
